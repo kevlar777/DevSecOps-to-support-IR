@@ -151,3 +151,357 @@ scrape_configs:
   - job_name: 'prometheus'
     static_configs:
       - targets: ['localhost:9090']
+version: '3'
+
+services:
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - 3000:3000
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+version: '3'
+
+services:
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - 3000:3000
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=adminfrom flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def hello_world():
+    return 'Hello, World!'
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
+#!/bin/bash
+
+# Scan Docker image for vulnerabilities
+docker pull user/repo:latest
+docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest image user/repo:latest
+# Automated Incident Response in DevSecOps
+
+## Project Description
+This project demonstrates the integration of automated incident response within a DevSecOps pipeline. The goal is to identify security incidents in real-time, automate responses to those incidents, and ensure continuous security and compliance in the development lifecycle.
+
+## Features
+- Continuous Security Monitoring
+- Automated Incident Detection
+- Automated Incident Response
+- Logging and Alerting
+- Compliance Checks
+
+## Technologies and Tools
+- CI/CD: GitHub Actions
+- Containerization: Docker
+- Orchestration: Kubernetes
+- Security Tools: Trivy, Aqua Security, Falco, ELK Stack
+- Scripting: Python, Bash
+- Automation: Ansible, Terraform
+- Monitoring: Prometheus, Grafana
+- Incident Response: SIEM (e.g., Splunk, Wazuh)
+
+## Setup Instructions
+1. Clone the repository.
+2. Set up the CI/CD pipeline using GitHub Actions.
+3. Configure Docker and build the images.
+4. Set up security monitoring tools and configure logging.
+5. Deploy the infrastructure using Terraform.
+6. Run the Ansible playbooks for automated incident response.
+
+## Usage
+- Push code changes to trigger the CI/CD pipeline.
+- Monitor security incidents using the ELK stack and Prometheus.
+- Respond to incidents automatically using Ansible playbooks.
+
+## Documentation
+Refer to the `docs` folder for detailed documentation on each component and workflow.
+# Project Architecture
+
+## Overview
+This project integrates automated incident response within a DevSecOps pipeline, utilizing various tools and technologies to ensure continuous security and compliance.
+
+## Components
+- **CI/CD Pipeline:** GitHub Actions for continuous integration and deployment.
+- **Containerization:** Docker for containerizing applications.
+- **Orchestration:** Kubernetes for orchestrating container deployments.
+- **Security Monitoring:** Trivy, Aqua Security, Falco for security scanning and monitoring.
+- **Logging:** ELK Stack (Elasticsearch, Logstash, Kibana) for centralized logging and analysis.
+- **Monitoring:** Prometheus and Grafana for metrics and monitoring.
+- **Incident Response:** Ansible for automating incident response actions.
+
+## Workflow
+1. **Code Commit:** Developers push code changes to the repository.
+2. **CI/CD Pipeline:** GitHub Actions build, test, and deploy the application.
+3. **Security Scanning:** Trivy scans Docker images for vulnerabilities.
+4. **Deployment:** Docker images are deployed to a Kubernetes cluster.
+5. **Monitoring:** Prometheus and Grafana monitor the application and infrastructure.
+6. **Logging:** ELK Stack collects and analyzes logs.
+7. **Incident Detection:** Falco detects security incidents in real-time.
+8. **Incident Response:** Ansible playbooks automate response actions.
+
+## Diagram
+![Architecture Diagram](architecture_diagram.png)
+# Setup Instructions
+
+## Prerequisites
+- Docker
+- Docker Compose
+- Ansible
+- GitHub account
+
+## Step-by-Step Setup
+
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/yourusername/automated-incident-response-devsecops.git
+   cd automated-incident-response-devsecops
+cd docker
+docker build -t user/repo:latest .
+cd logging
+docker-compose up -d
+cd monitoring
+docker-compose up -d
+ansible-playbook ansible/playbooks/isolate_container.yml --extra-vars "container_name=your_container_name"
+
+### Additional Steps
+
+1. **Testing:**
+   Thoroughly test each component and the overall workflow to ensure everything is functioning correctly.
+
+2. **Video Demonstration:**
+   Create a short video tutorial or demo to showcase the
+name: CI/CD Pipeline
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        push: true
+        tags: user/repo:latest
+
+    - name: Scan Docker image for vulnerabilities
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: user/repo:latest
+FROM python:3.8-slim
+
+# Install dependencies
+RUN pip install flask
+
+# Copy application code
+COPY app /app
+
+# Set the working directory
+WORKDIR /app
+
+# Run the application
+CMD ["python", "app.py"]
+- name: Isolate compromised container
+  hosts: localhost
+  tasks:
+    - name: Stop compromised container
+      docker_container:
+        name: "{{ container_name }}"
+        state: stopped
+version: '3'
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.3
+    environment:
+      - discovery.type=single-node
+    ports:
+      - 9200:9200
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.9.3
+    volumes:
+      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    ports:
+      - 5000:5000
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.9.3
+    ports:
+      - 5601:5601
+input {
+  beats {
+    port => 5044
+  }
+}
+
+output {
+  elasticsearch {
+    hosts => ["elasticsearch:9200"]
+  }
+}
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+version: '3'
+
+services:
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - 3000:3000
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def hello_world():
+    return 'Hello, World!'
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
+#!/bin/bash
+
+# Scan Docker image for vulnerabilities
+docker pull user/repo:latest
+docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest image user/repo:latest
+# Automated Incident Response in DevSecOps
+
+## Project Description
+This project demonstrates the integration of automated incident response within a DevSecOps pipeline. The goal is to identify security incidents in real-time, automate responses to those incidents, and ensure continuous security and compliance in the development lifecycle.
+
+## Features
+- Continuous Security Monitoring
+- Automated Incident Detection
+- Automated Incident Response
+- Logging and Alerting
+- Compliance Checks
+
+## Technologies and Tools
+- CI/CD: GitHub Actions
+- Containerization: Docker
+- Orchestration: Kubernetes
+- Security Tools: Trivy, Aqua Security, Falco, ELK Stack
+- Scripting: Python, Bash
+- Automation: Ansible, Terraform
+- Monitoring: Prometheus, Grafana
+- Incident Response: SIEM (e.g., Splunk, Wazuh)
+
+## Setup Instructions
+1. Clone the repository.
+2. Set up the CI/CD pipeline using GitHub Actions.
+3. Configure Docker and build the images.
+4. Set up security monitoring tools and configure logging.
+5. Deploy the infrastructure using Terraform.
+6. Run the Ansible playbooks for automated incident response.
+
+## Usage
+- Push code changes to trigger the CI/CD pipeline.
+- Monitor security incidents using the ELK stack and Prometheus.
+- Respond to incidents automatically using Ansible playbooks.
+
+## Documentation
+Refer to the `docs` folder for detailed documentation on each component and workflow.
+# Project Architecture
+
+## Overview
+This project integrates automated incident response within a DevSecOps pipeline, utilizing various tools and technologies to ensure continuous security and compliance.
+
+## Components
+- **CI/CD Pipeline:** GitHub Actions for continuous integration and deployment.
+- **Containerization:** Docker for containerizing applications.
+- **Orchestration:** Kubernetes for orchestrating container deployments.
+- **Security Monitoring:** Trivy, Aqua Security, Falco for security scanning and monitoring.
+- **Logging:** ELK Stack (Elasticsearch, Logstash, Kibana) for centralized logging and analysis.
+- **Monitoring:** Prometheus and Grafana for metrics and monitoring.
+- **Incident Response:** Ansible for automating incident response actions.
+
+## Workflow
+1. **Code Commit:** Developers push code changes to the repository.
+2. **CI/CD Pipeline:** GitHub Actions build, test, and deploy the application.
+3. **Security Scanning:** Trivy scans Docker images for vulnerabilities.
+4. **Deployment:** Docker images are deployed to a Kubernetes cluster.
+5. **Monitoring:** Prometheus and Grafana monitor the application and infrastructure.
+6. **Logging:** ELK Stack collects and analyzes logs.
+7. **Incident Detection:** Falco detects security incidents in real-time.
+8. **Incident Response:** Ansible playbooks automate response actions.
+
+## Diagram
+![Architecture Diagram](architecture_diagram.png)
+# Setup Instructions
+
+## Prerequisites
+- Docker
+- Docker Compose
+- Ansible
+- GitHub account
+
+## Step-by-Step Setup
+
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/yourusername/automated-incident-response-devsecops.git
+   cd automated-incident-response-devsecops
+cd docker
+docker build -t user/repo:latest .
+cd logging
+docker-compose up -d
+cd monitoring
+docker-compose up -dansible-playbook ansible/playbooks/isolate_container.yml --extra-vars "container_name=your_container_name"
+
+### Finalizing the Project
+
+1. **Testing:**
+   Thoroughly test the setup to ensure all components work as expected.
+
+2. **Documenting:**
+   Add any additional documentation as necessary, including troubleshooting tips and advanced configurations.
+
+3. **Presentation:**
+   Prepare a presentation or a video demo that showcases the workflow, highlighting key features and demonstrating the automated incident response.
+
+4. **Sharing:**
+   Share your GitHub repository link with potential employers or showcase it in your portfolio. 
+
+By following this guide and implementing the provided files and scripts, you will have a complete, functional project ready to showcase on GitHub.
+
+
