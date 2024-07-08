@@ -13,7 +13,14 @@ on: [push]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest- name: Isolate compromised container
+  hosts: localhost
+  tasks:
+    - name: Stop compromised container
+      docker_container:
+        name: "{{ container_name }}"
+        state: stopped
+
 
     steps:
     - name: Checkout code
