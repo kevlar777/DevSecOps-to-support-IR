@@ -85,7 +85,18 @@ services:
       # Runs a set of commands using the runners shellFROM python:3.8-slim
 
 # Install dependencies
-RUN pip install flask
+RUN pip install flaskinput {
+  beats {
+    port => 5044
+  }
+}
+
+output {
+  elasticsearch {
+    hosts => ["elasticsearch:9200"]
+  }
+}
+
 
 # Copy application code
 COPY app /app
