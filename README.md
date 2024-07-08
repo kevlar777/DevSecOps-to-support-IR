@@ -1,1 +1,2 @@
-# DevSecOps-to-support-IR
+# DevSecOps-to-support-IRgit clone https://github.com/yourusername/automated-incident-response-devsecops.git
+cd automated-incident-response-devsecops
