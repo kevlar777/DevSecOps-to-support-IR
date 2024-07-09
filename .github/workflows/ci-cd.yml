@@ -76,3 +76,6 @@ services:
     image: user/repo:latest
     ports:
       - 5000:5000
+git add .github/workflows/ci-cd.yml
+git commit -m "Update GitHub Actions workflow"
+git push origin main
